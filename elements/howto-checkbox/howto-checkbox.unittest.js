@@ -29,8 +29,9 @@
         });
     });
 
-    it('should add a [role] to the checkbox', function() {
-      expect(this.checkbox.getAttribute('role')).to.equal('checkbox');
+    it('should add a [role] to the checkbox', async function() {
+      var accessibleCheckbox = await window.getComputedAccessibleNode(this.checkbox);
+      expect(accessibleCheckbox.role).to.equal('checkBox');
     });
 
     it('should add a [tabindex] to the checkbox', function() {
@@ -39,86 +40,124 @@
 
     describe('checked', function() {
       it('should toggle [checked] and [aria-checked] when calling ' +
-        '_toggleChecked()', function() {
+        '_toggleChecked()', async function() {
           expect(this.checkbox.checked).to.be.false;
+          let accessibleBox = await window.getComputedAccessibleNode(this.checkbox);
+          expect(accessibleBox.checked).to.equal("false");
+
           this.checkbox._toggleChecked();
-          expect(this.checkbox.getAttribute('aria-checked')).to.equal('true');
+          await accessibleBox.ensureUpToDate();
+          expect(accessibleBox.checked).to.equal("true");
           expect(this.checkbox.checked).to.be.true;
         });
 
-      it('should toggle [checked] and [aria-checked] when setting .checked', function() {
+      it('should toggle [checked] and [aria-checked] when setting .checked', async function() {
         expect(this.checkbox.checked).to.be.false;
+        let accessibleBox = await window.getComputedAccessibleNode(this.checkbox);
+        expect(accessibleBox.checked).to.equal("false");
+
         this.checkbox.checked = true;
-        expect(this.checkbox.getAttribute('aria-checked')).to.equal('true');
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.checked).to.equal("true");
         expect(this.checkbox.checked).to.be.true;
+
         this.checkbox.checked = false;
-        expect(this.checkbox.getAttribute('aria-checked')).to.equal('false');
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.checked).to.equal("false");
         expect(this.checkbox.checked).to.be.false;
       });
 
-      it('should handle truthy/falsy values for .checked', function() {
+      it('should handle truthy/falsy values for .checked', async function() {
         expect(this.checkbox.checked).to.be.false;
+        let accessibleBox = await window.getComputedAccessibleNode(this.checkbox);
+        expect(accessibleBox.checked).to.equal("false");
+
         this.checkbox.checked = '0';
-        expect(this.checkbox.getAttribute('aria-checked')).to.equal('true');
-        expect(this.checkbox.hasAttribute('checked')).to.be.true;
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.checked).to.equal("true");
         expect(this.checkbox.checked).to.be.true;
+
         this.checkbox.checked = undefined;
-        expect(this.checkbox.getAttribute('aria-checked')).to.equal('false');
-        expect(this.checkbox.hasAttribute('checked')).to.be.false;
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.checked).to.equal("false");
         expect(this.checkbox.checked).to.be.false;
+
         this.checkbox.checked = 1;
-        expect(this.checkbox.getAttribute('aria-checked')).to.equal('true');
-        expect(this.checkbox.hasAttribute('checked')).to.be.true;
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.checked).to.equal("true");
         expect(this.checkbox.checked).to.be.true;
+
       });
 
-      it('should toggle .checked, [aria-checked] when setting [checked]', function() {
-        expect(this.checkbox.hasAttribute('checked')).to.be.false;
+      it('should toggle .checked, [aria-checked] when setting [checked]', async function() {
+        expect(this.checkbox.checked).to.be.false;
+        let accessibleBox = await window.getComputedAccessibleNode(this.checkbox);
+        expect(accessibleBox.checked).to.equal("false");
+
         this.checkbox.setAttribute('checked', '');
-        expect(this.checkbox.getAttribute('aria-checked')).to.equal('true');
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.checked).to.equal("true");
         expect(this.checkbox.checked).to.be.true;
+
         this.checkbox.removeAttribute('checked');
-        expect(this.checkbox.getAttribute('aria-checked')).to.equal('false');
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.checked).to.equal("false");
         expect(this.checkbox.checked).to.be.false;
       });
     });
 
     describe('disabled', function() {
-      it('should toggle [disabled], [aria-disabled], and [tabindex] when setting .disabled', function() {
+      it('should toggle [disabled], [aria-disabled], and [tabindex] when setting .disabled', async function() {
         expect(this.checkbox.disabled).to.be.false;
+        let accessibleBox = await window.getComputedAccessibleNode(this.checkbox);
+        expect(accessibleBox.disabled).to.be.false;
+
         this.checkbox.disabled = true;
-        expect(this.checkbox.getAttribute('aria-disabled')).to.equal('true');
-        expect(this.checkbox.hasAttribute('tabindex')).to.be.false;
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.disabled).to.be.true;
         expect(this.checkbox.disabled).to.be.true;
+
         this.checkbox.disabled = false;
-        expect(this.checkbox.getAttribute('aria-disabled')).to.equal('false');
-        expect(this.checkbox.getAttribute('tabindex')).to.equal('0');
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.disabled).to.be.false;
         expect(this.checkbox.disabled).to.be.false;
       });
 
-      it('should handle truthy/falsy values for .disabled', function() {
+      it('should handle truthy/falsy values for .disabled', async function() {
         expect(this.checkbox.disabled).to.be.false;
+        let accessibleBox = await window.getComputedAccessibleNode(this.checkbox);
+        expect(accessibleBox.disabled).to.be.false;
+
         this.checkbox.disabled = '0';
-        expect(this.checkbox.getAttribute('aria-disabled')).to.equal('true');
-        expect(this.checkbox.hasAttribute('disabled')).to.be.true;
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.disabled).to.be.true;
         expect(this.checkbox.disabled).to.be.true;
+
         this.checkbox.disabled = undefined;
-        expect(this.checkbox.getAttribute('aria-disabled')).to.equal('false');
-        expect(this.checkbox.hasAttribute('disabled')).to.be.false;
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.disabled).to.be.false;
         expect(this.checkbox.disabled).to.be.false;
+
         this.checkbox.disabled = 1;
-        expect(this.checkbox.getAttribute('aria-disabled')).to.equal('true');
-        expect(this.checkbox.hasAttribute('disabled')).to.be.true;
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.disabled).to.be.true;
         expect(this.checkbox.disabled).to.be.true;
+
       });
 
-      it('should toggle .disabled, [aria-disabled] when setting [disabled]', function() {
-        expect(this.checkbox.hasAttribute('disabled')).to.be.false;
+      it('should toggle .disabled, [aria-disabled] when setting [disabled]', async function() {
+        expect(this.checkbox.disabled).to.be.false;
+        let accessibleBox = await window.getComputedAccessibleNode(this.checkbox);
+        expect(accessibleBox.disabled).to.be.false;
+
         this.checkbox.setAttribute('disabled', '');
-        expect(this.checkbox.getAttribute('aria-disabled')).to.equal('true');
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.disabled).to.equal(true);
         expect(this.checkbox.disabled).to.be.true;
+
         this.checkbox.removeAttribute('disabled');
-        expect(this.checkbox.getAttribute('aria-disabled')).to.equal('false');
+        await accessibleBox.ensureUpToDate();
+        expect(accessibleBox.disabled).to.be.false;
         expect(this.checkbox.disabled).to.be.false;
       });
     });
